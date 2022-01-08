@@ -140,14 +140,14 @@ void handleMQTTcallback(char* topic, byte* payload, unsigned int length) {
   if (strncmp(topic, settingMQTTtopTopic.c_str(), settingMQTTtopTopic.length()) != 0) {
     MQTTDebugln(F("MQTT: wrong top topic"));
     return;
+  } else {
+    //remove the top topic part
+    MQTTDebugTf("Parsing topic: %s/", settingMQTTtopTopic.c_str());
+    topic += settingMQTTtopTopic.length();
+    if (*topic == '/') topic++;
   }
-
-  //skip toptopic part
-  token = strtok((topic+settingMQTTtopTopic.length()), "/"); 
-  MQTTDebugTf("Parsing topic: %s/", settingMQTTtopTopic.c_str());
-
   // naming convention /set/<node id>/<command>
-  token = strtok(NULL, "/"); 
+  token = strtok(topic, "/"); 
   MQTTDebugf("%s/", token);
   if (strcasecmp(token, "set") == 0) {
     token = strtok(NULL, "/");
